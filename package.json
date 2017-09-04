@@ -13,5 +13,5 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "homepage": "https://leeeozhang.github.io/Webpack-Demo/index.html"
+  "homepage": "https://leeeozhang.github.io/Webpack-Demo/build"
 }
