@@ -1,6 +1,6 @@
 import React from 'react'
 import './UserDialog.css'
-import {signUp} from './leanCloud'
+import {signUp, signIn} from './leanCloud'
 
 export default class UserDialog extends React.Component {
     constructor (props) {
@@ -26,13 +26,36 @@ export default class UserDialog extends React.Component {
         let success = (user) => {
             this.props.onSigUp.call(null, user)
         }
-        let error = (error)=>{
-            console.log(error)
+        let error = (error) => {
+            switch (error.code) {
+                case 202:
+                    alert('用户名已被占用')
+                    break
+                default:
+                    alert(error)
+                    break
+            }
         }
         signUp(username, password, success, error)
     }
 
     signIn (event) {
+        event.preventDefault()
+        let {username, password} = this.state.formData
+        let success = (user) => {
+            this.props.onSign.call(null, user)
+        }
+        let error = (error) => {
+            switch (error.code) {
+                case 202:
+                    alert('用户名已被占用')
+                    break
+                default:
+                    alert(error)
+                    break
+            }
+        }
+        signIn(username, password, success, error)
     }
 
     changeFormData (key, event) {
@@ -47,7 +70,7 @@ export default class UserDialog extends React.Component {
                 <div className="row">
                     <label>用户名</label>
                     <input type="text" value={this.state.formData.username}
-                           onChange={this.changeFormData.bind(this, 'usename')}/>
+                           onChange={this.changeFormData.bind(this, 'username')}/>
                 </div>
                 <div className="row">
                     <label>密码</label>
@@ -79,9 +102,11 @@ export default class UserDialog extends React.Component {
         return (
             <div className="UserDialog-Wrapper">
                 <div className="UserDialog">
-                    <nav onChange={this.switch.bind(this)}>
-                        <label>注册<input type="radio" value="signUp" checked={this.state.selected === 'signUp'}/></label>
-                        <label>登录<input type="radio" value="signIn" checked={this.state.selected === 'signIn'}/></label>
+                    <nav>
+                        <label>注册<input type="radio" value="signUp" checked={this.state.selected === 'signUp'}
+                                        onChange={this.switch.bind(this)}/></label>
+                        <label>登录<input type="radio" value="signIn" checked={this.state.selected === 'signIn'}
+                                        onChange={this.switch.bind(this)}/></label>
                     </nav>
                     <div className="panes">
                         {this.state.selected === 'signUp' ? signUpForm : null}

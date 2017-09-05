@@ -13,7 +13,7 @@ export function signUp (username, password, successFn, errorFn) {
     let user = new AV.User()
     user.setUsername(username)
     user.setPassword(password)
-    user.signUp().then(function(loginedUser){
+    user.signUp().then(function (loginedUser) {
         let user = getUserFromAVUser(loginedUser)
         successFn.call(null, user)
     }, function (error) {
@@ -22,7 +22,31 @@ export function signUp (username, password, successFn, errorFn) {
     return undefined
 }
 
-function getUserFromAVUser(AVuser) {
+
+export function signOut(){
+    AV.User.logOut()
+    return undefined
+}
+
+export function signIn(username, password, successFn, errorFn){
+    AV.User.logIn(username, password).then(function(loginedUser){
+        let user = getUserFromAVUser(loginedUser)
+        successFn.call(null, user)
+    }, function(error){
+        errorFn.call(null, error)
+    })
+}
+
+export function getCurrentUser () {
+    let user = AV.User.current()
+    if (user) {
+        return getUserFromAVUser(user)
+    } else {
+        return null
+    }
+}
+
+function getUserFromAVUser (AVuser) {
     return {
         id: AVuser.id,
         ...AVuser.attributes
