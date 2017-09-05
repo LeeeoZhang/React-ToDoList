@@ -4,6 +4,8 @@ import 'normalize.css'
 import './reset.css'
 import TodoInput from './TodoInput'
 import TodoItem from './TodoItem'
+import UserDialog from './UserDialog'
+
 
 let id = 0
 
@@ -16,10 +18,9 @@ class App extends Component {
     constructor (props) {
         super(props)
         this.state = {
+            user: {},
             newTodo: '',
-            todoList: [
-                {id: 1, title: '第一个待办'}
-            ]
+            todoList: []
         }
     }
 
@@ -36,7 +37,7 @@ class App extends Component {
         })
     }
 
-    changeTile (event) {
+    changeTitle (event) {
         this.setState({
             newTodo: event.target.value,
             todoList: this.state.todoList
@@ -53,6 +54,11 @@ class App extends Component {
         this.setState(this.state)
     }
 
+    onSigUp(user){
+        this.state.user = user
+        this.setState(this.state)
+    }
+
     render () {
         let todos = this.state.todoList.filter((item) => !item.deleted).map((item, index) => {
             return (
@@ -64,14 +70,15 @@ class App extends Component {
         console.log(todos)
         return (
             <div className="App">
-                <h1>我的待办</h1>
+                <h1>{this.state.user.username || '我'}的待办</h1>
                 <div className="inputWraper">
                     <TodoInput content={this.state.newTodo} onSubmit={this.addTodo.bind(this)}
-                               onChange={this.changeTile.bind(this)}/>
+                               onChange={this.changeTitle.bind(this)}/>
                 </div>
                 <ol className="todoList">
                     {todos}
                 </ol>
+                <UserDialog onSigUp={this.onSigUp.bind(this)}/>
             </div>
         )
     }
