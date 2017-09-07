@@ -1,24 +1,22 @@
 import React from 'react'
 
-export default class SignInForm extends React.Component {
-    render () {
-        return (
-            <form className="signIn" onSubmit={this.props.onSubmit.bind(this)}>
-                <div className="row">
-                    <label>用户名</label>
-                    <input type="text" value={this.props.formData.username}
-                           onChange={this.props.onChange.bind(null, 'username')}/>
-                </div>
-                <div className="row">
-                    <label>密码</label>
-                    <input type="password" value={this.props.formData.password}
-                           onChange={this.props.onChange.bind(null, 'password')}/>
-                </div>
-                <div className="row action">
-                    <button type="submit">登录</button>
-                    <a href="#" onClick={this.props.onForgotPassword}>忘记密码？</a>
-                </div>
-            </form>
-        )
-    }
+export default function (props) {
+    return (
+        <form className="signIn" onSubmit={props.onSubmit.bind(this)}>
+            <div className="row">
+                <label>用户名</label>
+                <input type="text" value={props.formData.username}
+                       onChange={props.onChange.bind(null, 'username')}/>
+            </div>
+            <div className="row">
+                <label>密码</label>
+                <input type="password" value={props.formData.password}
+                       onChange={props.onChange.bind(null, 'password')}/>
+            </div>
+            <div className="row action">
+                <button type="submit">登录</button>
+                <a href="#" onClick={props.onForgotPassword}>忘记密码？</a>
+            </div>
+        </form>
+    )
 }

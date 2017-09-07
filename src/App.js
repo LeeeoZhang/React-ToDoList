@@ -1,20 +1,15 @@
 import React, {Component} from 'react'
 import './App.css'
-import 'normalize.css'
 import './reset.css'
 import TodoInput from './TodoInput'
 import TodoItem from './TodoItem'
 import UserDialog from './UserDialog'
-import {getCurrentUser, signOut} from './leanCloud'
+import {getCurrentUser, signOut, TodoModel} from './leanCloud'
 import {getStateCopy} from './utils'
-
-
-let id = 0
-
-function idMaker () {
-    id += 1
-    return id
-}
+import FlatButton from 'material-ui/FlatButton'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import ContentAdd from 'material-ui/svg-icons/content/add'
 
 
 export default class App extends Component {
@@ -25,18 +20,31 @@ export default class App extends Component {
             newTodo: '',
             todoList: []
         }
+        let user = getCurrentUser()
+        if (user) {
+            TodoModel.getByUser(user, (todo) => {
+                let stateCopy = getStateCopy(this.state)
+                stateCopy.todoList = todo
+                this.setState(stateCopy)
+            })
+        }
     }
 
     addTodo (event) {
-        this.state.todoList.push({
-            id: idMaker(),
+        let newTodo = {
             title: event.target.value,
-            status: null,
+            status: '',
             deleted: false
-        })
-        this.setState({
-            newTodo: '',
-            todoList: this.state.todoList
+        }
+        TodoModel.create(newTodo, (id) => {
+            newTodo.id = id
+            this.state.todoList.push(newTodo)
+            this.setState({
+                newTodo: '',
+                todoList: this.state.todoList
+            })
+        }, (error) => {
+            console.log(error)
         })
     }
 
@@ -48,19 +56,32 @@ export default class App extends Component {
     }
 
     toggle (event, todo) {
+        let oldStatus = todo.status
         todo.status = todo.status === 'completed' ? '' : 'completed'
-        this.setState(this.state)
+        TodoModel.update(todo, () => {
+            this.setState(this.state)
+        }, (error) => {
+            todo.status = oldStatus
+            this.setState(this.state)
+        })
     }
 
     deleted (event, todo) {
-        todo.deleted = true
-        this.setState(this.state)
+        TodoModel.destroy(todo.id, () => {
+            todo.deleted = true
+            this.setState(this.state)
+        })
     }
 
 
     onSignUpOrSignIn (user) {
         let stateCopy = getStateCopy(this.state)
         stateCopy.user = user
+        TodoModel.getByUser(user, (todo) => {
+            let stateCopy = getStateCopy(this.state)
+            stateCopy.todoList = todo
+            this.setState(stateCopy)
+        })
         this.setState(stateCopy)
     }
 
@@ -68,6 +89,7 @@ export default class App extends Component {
         signOut()
         let stateCopy = getStateCopy(this.state)
         stateCopy.user = {}
+        stateCopy.todoList = []
         this.setState(stateCopy)
     }
 
@@ -79,22 +101,34 @@ export default class App extends Component {
                 </li>
             )
         })
+        let addButtonStyle = {
+            position: 'absolute',
+            right: '1em',
+            bottom: '-1em',
+        }
         return (
-            <div className="App">
-                <h1>{this.state.user.username || '我'}的待办
-                    {this.state.user.id ? <button onClick={this.signOut.bind(this)}>登出</button> : null}
-                </h1>
-                <div className="inputWraper">
-                    <TodoInput content={this.state.newTodo} onSubmit={this.addTodo.bind(this)}
-                               onChange={this.changeTitle.bind(this)}/>
+            <MuiThemeProvider>
+                <div className="App">
+                    <header>
+                        <h1>{this.state.user.username+"'s"+' ' || ''}Task</h1>
+                        {this.state.user.id ?
+                        <FlatButton label="Primary" primary={true} onClick={this.signOut.bind(this)}/> : null}
+                        <FloatingActionButton secondary={true} style={addButtonStyle}>
+                            <ContentAdd />
+                        </FloatingActionButton>
+                    </header>
+                    <div className="inputWraper">
+                        <TodoInput content={this.state.newTodo} onSubmit={this.addTodo.bind(this)}
+                                   onChange={this.changeTitle.bind(this)}/>
+                    </div>
+                    <ol className="todoList">
+                        {todos}
+                    </ol>
+                    {this.state.user.id ? null :
+                        <UserDialog onSigUp={this.onSignUpOrSignIn.bind(this)}
+                                    onSignIn={this.onSignUpOrSignIn.bind(this)}/>}
                 </div>
-                <ol className="todoList">
-                    {todos}
-                </ol>
-                {this.state.user.id ? null :
-                    <UserDialog onSigUp={this.onSignUpOrSignIn.bind(this)}
-                                onSignIn={this.onSignUpOrSignIn.bind(this)}/>}
-            </div>
+            </MuiThemeProvider>
         )
     }
 }
