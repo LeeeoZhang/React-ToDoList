@@ -1,7 +1,7 @@
 import React from 'react'
 import './TodoItem.css'
 
-class TodoItem extends React.Component {
+export default class TodoItem extends React.Component {
 
     deleted (event) {
         this.props.onDelete(event, this.props.todo)
@@ -22,5 +22,3 @@ class TodoItem extends React.Component {
         )
     }
 }
-
-export default TodoItem

@@ -9,10 +9,11 @@ AV.init({
 export default AV
 
 
-export function signUp (username, password, successFn, errorFn) {
+export function signUp (username, password, email, successFn, errorFn) {
     let user = new AV.User()
     user.setUsername(username)
     user.setPassword(password)
+    user.setEmail(email)
     user.signUp().then(function (loginedUser) {
         let user = getUserFromAVUser(loginedUser)
         successFn.call(null, user)
@@ -23,16 +24,16 @@ export function signUp (username, password, successFn, errorFn) {
 }
 
 
-export function signOut(){
+export function signOut () {
     AV.User.logOut()
     return undefined
 }
 
-export function signIn(username, password, successFn, errorFn){
-    AV.User.logIn(username, password).then(function(loginedUser){
+export function signIn (username, password, successFn, errorFn) {
+    AV.User.logIn(username, password).then(function (loginedUser) {
         let user = getUserFromAVUser(loginedUser)
         successFn.call(null, user)
-    }, function(error){
+    }, function (error) {
         errorFn.call(null, error)
     })
 }
@@ -44,6 +45,25 @@ export function getCurrentUser () {
     } else {
         return null
     }
+}
+
+export function getErrorMessage (code) {
+    const map = {
+        202: 'The username is occupied',
+        217: 'Invalid username',
+        210: 'The username and password do not match',
+        211: 'The username could not be found',
+        unknown: 'The request failed and tried later'
+    }
+    return map[code] || map.unknown
+}
+
+export function sendPasswordResetEmail (email, successFn, errorFn) {
+    AV.User.requestPasswordReset(email).then(function (success) {
+        successFn.call()
+    }, function (error) {
+        errorFn.call(null, error)
+    })
 }
 
 function getUserFromAVUser (AVuser) {

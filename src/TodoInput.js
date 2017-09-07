@@ -1,7 +1,7 @@
 import React from 'react'
 import './TodoInput.css'
 
-class TodoInput extends React.Component {
+export default class TodoInput extends React.Component {
     submit (e) {
         if (e.key === 'Enter') {
             this.props.onSubmit(e)
@@ -17,5 +17,3 @@ class TodoInput extends React.Component {
                       onChange={this.changeTitle.bind(this)}/>
     }
 }
-
-export default TodoInput

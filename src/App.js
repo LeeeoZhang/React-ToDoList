@@ -6,6 +6,7 @@ import TodoInput from './TodoInput'
 import TodoItem from './TodoItem'
 import UserDialog from './UserDialog'
 import {getCurrentUser, signOut} from './leanCloud'
+import {getStateCopy} from './utils'
 
 
 let id = 0
@@ -15,7 +16,8 @@ function idMaker () {
     return id
 }
 
-class App extends Component {
+
+export default class App extends Component {
     constructor (props) {
         super(props)
         this.state = {
@@ -57,14 +59,14 @@ class App extends Component {
 
 
     onSignUpOrSignIn (user) {
-        let stateCopy = JSON.parse(JSON.stringify(this.state))
+        let stateCopy = getStateCopy(this.state)
         stateCopy.user = user
         this.setState(stateCopy)
     }
 
     signOut () {
         signOut()
-        let stateCopy = JSON.parse(JSON.stringify(this.state))
+        let stateCopy = getStateCopy(this.state)
         stateCopy.user = {}
         this.setState(stateCopy)
     }
@@ -77,7 +79,6 @@ class App extends Component {
                 </li>
             )
         })
-        console.log(todos)
         return (
             <div className="App">
                 <h1>{this.state.user.username || '我'}的待办
@@ -98,4 +99,4 @@ class App extends Component {
     }
 }
 
-export default App
+
