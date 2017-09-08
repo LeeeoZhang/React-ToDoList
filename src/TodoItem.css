@@ -1,10 +1,20 @@
 .TodoItem {
-    padding: .5em;
     display: flex;
-    align-content: center;
+    align-items: center;
+    margin-top: 2em;
 }
 
 .TodoItem > .title {
-    flex-grow: 1;
-    padding: 0 .5em;
+    width: 70%;
+    outline: none;
+    font-size: 20px;
+    border: none;
+    border-bottom: .5px solid ;
+}
+
+.TodoItem > .action {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    align-items: center;
 }

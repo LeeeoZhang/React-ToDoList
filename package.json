@@ -6,6 +6,7 @@
     "leancloud-storage": "^3.1.1",
     "material-ui": "^0.19.1",
     "normalize.css": "^7.0.0",
+    "rctui": "^0.7.19",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-scripts": "1.0.13"

@@ -17,7 +17,6 @@ export default class App extends Component {
         super(props)
         this.state = {
             user: getCurrentUser() || {},
-            newTodo: '',
             todoList: []
         }
         let user = getCurrentUser()
@@ -30,9 +29,9 @@ export default class App extends Component {
         }
     }
 
-    addTodo (event) {
+    addTodo () {
         let newTodo = {
-            title: event.target.value,
+            title: '',
             status: '',
             deleted: false
         }
@@ -40,7 +39,6 @@ export default class App extends Component {
             newTodo.id = id
             this.state.todoList.push(newTodo)
             this.setState({
-                newTodo: '',
                 todoList: this.state.todoList
             })
         }, (error) => {
@@ -48,10 +46,14 @@ export default class App extends Component {
         })
     }
 
-    changeTitle (event) {
-        this.setState({
-            newTodo: event.target.value,
-            todoList: this.state.todoList
+    changeTitle (event, todo) {
+        let oldTitle = todo.title
+        todo.title = event.target.value
+        TodoModel.update(todo, () => {
+            this.setState(this.state)
+        }, (error) => {
+            todo.title = oldTitle
+            this.setState(this.state)
         })
     }
 
@@ -97,30 +99,35 @@ export default class App extends Component {
         let todos = this.state.todoList.filter((item) => !item.deleted).map((item, index) => {
             return (
                 <li key={index}>
-                    <TodoItem todo={item} onToggle={this.toggle.bind(this)} onDelete={this.deleted.bind(this)}/>
+                    <TodoItem todo={item} onToggle={this.toggle.bind(this)} onDelete={this.deleted.bind(this)}
+                              onChange={this.changeTitle.bind(this)}/>
                 </li>
             )
         })
         let addButtonStyle = {
             position: 'absolute',
             right: '1em',
-            bottom: '-1em',
+            bottom: '-1.5em',
+        }
+        let labelStyle = {
+            paddingLeft: '0px'
         }
         return (
             <MuiThemeProvider>
                 <div className="App">
                     <header>
-                        <h1>{this.state.user.username+"'s"+' ' || ''}Task</h1>
+                        <h1>{(this.state.user.username || 'Who') + "'s "}Task</h1>
                         {this.state.user.id ?
-                        <FlatButton label="Primary" primary={true} onClick={this.signOut.bind(this)}/> : null}
-                        <FloatingActionButton secondary={true} style={addButtonStyle}>
-                            <ContentAdd />
+                            <FlatButton labelStyle={labelStyle} hoverColor="#366cd3" label="Logout" primary={true}
+                                        onClick={this.signOut.bind(this)}/> : null}
+                        <FloatingActionButton onClick={this.addTodo.bind(this)} secondary={true} style={addButtonStyle}>
+                            <ContentAdd/>
                         </FloatingActionButton>
                     </header>
-                    <div className="inputWraper">
-                        <TodoInput content={this.state.newTodo} onSubmit={this.addTodo.bind(this)}
-                                   onChange={this.changeTitle.bind(this)}/>
-                    </div>
+                    {/*<div className="inputWraper">*/}
+                    {/*<TodoInput content={this.state.newTodo} onSubmit={this.addTodo.bind(this)}*/}
+                    {/*onChange={this.changeTitle.bind(this)}/>*/}
+                    {/*</div>*/}
                     <ol className="todoList">
                         {todos}
                     </ol>
