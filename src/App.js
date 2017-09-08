@@ -33,7 +33,7 @@ export default class App extends Component {
         let newTodo = {
             title: '',
             status: '',
-            deleted: false
+            deleted: false,
         }
         TodoModel.create(newTodo, (id) => {
             newTodo.id = id
@@ -72,6 +72,7 @@ export default class App extends Component {
         TodoModel.destroy(todo.id, () => {
             todo.deleted = true
             this.setState(this.state)
+            console.log(this.state)
         })
     }
 
@@ -104,6 +105,7 @@ export default class App extends Component {
                 </li>
             )
         })
+        console.log(todos)
         let addButtonStyle = {
             position: 'absolute',
             right: '1em',
