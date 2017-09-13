@@ -72,10 +72,8 @@ export default class App extends Component {
         TodoModel.destroy(todo.id, () => {
             todo.deleted = true
             this.setState(this.state)
-            console.log(this.state)
         })
     }
-
 
     onSignUpOrSignIn (user) {
         let stateCopy = getStateCopy(this.state)
@@ -105,7 +103,6 @@ export default class App extends Component {
                 </li>
             )
         })
-        console.log(todos)
         let addButtonStyle = {
             position: 'absolute',
             right: '1em',

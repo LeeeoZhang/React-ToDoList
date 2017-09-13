@@ -15,7 +15,6 @@ export default class TodoItem extends React.Component {
 
     onChange (event) {
         this.props.onChange(event, this.props.todo)
-        console.log(1)
     }
 
     render () {
