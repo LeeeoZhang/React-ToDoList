@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import './App.css'
 import './reset.css'
-import TodoInput from './TodoInput'
 import TodoItem from './TodoItem'
 import UserDialog from './UserDialog'
 import {getCurrentUser, signOut, TodoModel} from './leanCloud'
@@ -103,6 +102,7 @@ export default class App extends Component {
                 </li>
             )
         })
+        console.log(todos)
         let addButtonStyle = {
             position: 'absolute',
             right: '1em',
@@ -123,13 +123,9 @@ export default class App extends Component {
                             <ContentAdd/>
                         </FloatingActionButton>
                     </header>
-                    {/*<div className="inputWraper">*/}
-                    {/*<TodoInput content={this.state.newTodo} onSubmit={this.addTodo.bind(this)}*/}
-                    {/*onChange={this.changeTitle.bind(this)}/>*/}
-                    {/*</div>*/}
-                    <ol className="todoList">
+                    <ul className="todoList">
                         {todos}
-                    </ol>
+                    </ul>
                     {this.state.user.id ? null :
                         <UserDialog onSigUp={this.onSignUpOrSignIn.bind(this)}
                                     onSignIn={this.onSignUpOrSignIn.bind(this)}/>}

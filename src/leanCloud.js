@@ -49,7 +49,7 @@ export const TodoModel = {
         title !== undefined && todo.set('title', title)
         status !== undefined && todo.set('status', status)
         deleted !== undefined && todo.set('deleted', deleted)
-        todo.save().then((response) => {
+        todo.save().then(() => {
             successFn && successFn.call(null)
         }, (error) => {
             errorFn && errorFn.call(null, error)

@@ -10,7 +10,7 @@ function submit (props, event) {
     }
 }
 
-function changeTitle (props ,event) {
+function changeTitle (props, event) {
     props.onChange(event)
 }
 

@@ -22,9 +22,9 @@ export default class TodoItem extends React.Component {
             width: 40
         }
         return (
-            <div className="TodoItem" disabled>
+            <div className="TodoItem">
                 <input className="title" onBlur={this.onChange.bind(this)}
-                          disabled={this.props.todo.status === 'completed'} defaultValue={this.props.todo.title}/>
+                       disabled={this.props.todo.status === 'completed'} defaultValue={this.props.todo.title}/>
                 <div className="action">
                     <Checkbox onCheck={this.toggle.bind(this)}
                               checked={this.props.todo.status === 'completed'}

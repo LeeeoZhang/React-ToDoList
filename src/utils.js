@@ -1,4 +1,4 @@
-export function getStateCopy(state){
+export function getStateCopy (state) {
     return JSON.parse(JSON.stringify(state))
 }
 
